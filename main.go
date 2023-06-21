@@ -8,7 +8,11 @@ import (
 
 type todo struct {
 	ID        string `json:"id" `
+<<<<<<< HEAD
 	Item      string `json:"item"`
+=======
+	Item      string `json:"title"`
+>>>>>>> 27d948e19d2975a5c532226c5ee7653713043ac3
 	Completed bool   `json:"completed"`
 }
 
@@ -22,8 +26,11 @@ func main() {
 	router := gin.Default()
 	router.GET("/", getRoot)
 	router.GET("/todos", getTodos)
+<<<<<<< HEAD
 
 	router.POST("/todos", postTodo)
+=======
+>>>>>>> 27d948e19d2975a5c532226c5ee7653713043ac3
 
 	router.Run("localhost:8080")
 }
@@ -38,6 +45,7 @@ func getRoot(context *gin.Context) {
 func getTodos(context *gin.Context) {
 	context.IndentedJSON(
 		http.StatusOK,
+<<<<<<< HEAD
 		gin.H{"status": http.StatusOK, "todos": todos},
 	)
 }
@@ -79,3 +87,8 @@ func postTodo(context *gin.Context) {
 		}
 	}
 }
+=======
+		todos,
+	)
+}
+>>>>>>> 27d948e19d2975a5c532226c5ee7653713043ac3
