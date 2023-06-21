@@ -8,7 +8,7 @@ import (
 
 type todo struct {
 	ID        string `json:"id" `
-	Item      string `json:"title"`
+	Item      string `json:"item"`
 	Completed bool   `json:"completed"`
 }
 
@@ -23,6 +23,8 @@ func main() {
 	router.GET("/", getRoot)
 	router.GET("/todos", getTodos)
 
+	router.POST("/todos", postTodo)
+
 	router.Run("localhost:8080")
 }
 
@@ -36,6 +38,44 @@ func getRoot(context *gin.Context) {
 func getTodos(context *gin.Context) {
 	context.IndentedJSON(
 		http.StatusOK,
-		todos,
+		gin.H{"status": http.StatusOK, "todos": todos},
 	)
+}
+
+func postTodo(context *gin.Context) {
+	var newTodo todo
+
+	if err := context.BindJSON(&newTodo); err != nil {
+		return
+	}
+
+	if newTodo.ID == "" || newTodo.Item == "" {
+		context.IndentedJSON(
+			http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest},
+		)
+	} else {
+		n := len(todos)
+		exists := false
+
+		for i := 0; i < n; i++ {
+			if newTodo.ID == todos[i].ID {
+				exists = true
+				break
+			}
+		}
+
+		if exists {
+			context.IndentedJSON(
+				http.StatusBadRequest,
+				gin.H{"status": http.StatusBadRequest},
+			)
+		} else {
+			todos = append(todos, newTodo)
+			context.IndentedJSON(
+				http.StatusCreated,
+				gin.H{"status": http.StatusCreated, "todo": newTodo},
+			)
+		}
+	}
 }
